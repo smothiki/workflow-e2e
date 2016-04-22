@@ -40,7 +40,7 @@ func NewApp() App {
 	name := fmt.Sprintf("test-%d", rand.Intn(999999999))
 	return App{
 		Name: name,
-		URL:  strings.Replace(settings.DeisControllerURL, "deis", name, 1),
+		URL:  strings.Replace(settings.GetDeisControllerURL(), "deis", name, 1),
 	}
 }
 

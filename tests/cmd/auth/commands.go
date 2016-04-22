@@ -23,7 +23,7 @@ import (
 // the tests.
 func RegisterAdmin() {
 	admin := model.Admin
-	sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", &admin, settings.DeisControllerURL, admin.Username, admin.Password, admin.Email)
+	sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", &admin, settings.GetDeisControllerURL(), admin.Username, admin.Password, admin.Email)
 	Expect(err).To(BeNil())
 	Eventually(sess).Should(Exit())
 	Expect(err).NotTo(HaveOccurred())
@@ -44,7 +44,7 @@ func RegisterAdmin() {
 // Register executes `deis auth:register` using a randomized username and returns a model.User.
 func Register() model.User {
 	user := model.NewUser()
-	sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", &user, settings.DeisControllerURL, user.Username, user.Password, user.Email)
+	sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", &user, settings.GetDeisControllerURL(), user.Username, user.Password, user.Email)
 	Expect(err).To(BeNil())
 	Eventually(sess).Should(Exit(0))
 	Expect(err).NotTo(HaveOccurred())
@@ -57,7 +57,7 @@ func Register() model.User {
 // for most other actions is what permits multiple test users to act in parallel without impacting
 // one another.
 func Login(user model.User) {
-	sess, err := cmd.Start("deis auth:login %s --username=%s --password=%s", &user, settings.DeisControllerURL, user.Username, user.Password)
+	sess, err := cmd.Start("deis auth:login %s --username=%s --password=%s", &user, settings.GetDeisControllerURL(), user.Username, user.Password)
 	Expect(err).To(BeNil())
 	Eventually(sess).Should(Exit(0))
 	Expect(err).NotTo(HaveOccurred())

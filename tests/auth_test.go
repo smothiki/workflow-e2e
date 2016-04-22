@@ -55,7 +55,7 @@ var _ = Describe("deis auth", func() {
 		})
 
 		Specify("a new user cannot register using the same details", func() {
-			sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", nil, settings.DeisControllerURL, user.Username, user.Password, user.Email)
+			sess, err := cmd.Start("deis auth:register %s --username=%s --password=%s --email=%s", nil, settings.GetDeisControllerURL(), user.Username, user.Password, user.Email)
 			Eventually(sess.Err).Should(Say("Registration failed"))
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(sess).Should(Exit(1))

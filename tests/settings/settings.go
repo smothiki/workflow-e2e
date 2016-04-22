@@ -31,3 +31,11 @@ func init() {
 		MaxEventuallyTimeout, _ = time.ParseDuration(maxEventuallyTimeoutStr)
 	}
 }
+
+func GetDeisControllerURL() string {
+	return os.Getenv("DEIS_CONTROLLER_URL")
+}
+
+func SetDeisControllerURL(IP string) {
+	os.Setenv("DEIS_CONTROLLER_URL", "deis."+IP+".nip.io")
+}

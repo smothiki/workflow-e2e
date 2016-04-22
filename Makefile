@@ -13,7 +13,7 @@ else
 export GINKO_NODES_ARG=-p
 endif
 
-TEST_OPTS := -slowSpecThreshold=120.00 -noisyPendings=false ${GINKO_NODES_ARG}
+TEST_OPTS := -slowSpecThreshold=120.00 -noisyPendings=false ${GINKO_NODES_ARG} --skip=Recover
 
 DEIS_REGISTRY ?= quay.io/
 IMAGE_PREFIX ?= deis
