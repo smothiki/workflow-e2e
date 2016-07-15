@@ -12,6 +12,7 @@ import (
 	"github.com/deis/workflow-e2e/tests/cmd/keys"
 	"github.com/deis/workflow-e2e/tests/model"
 	"github.com/deis/workflow-e2e/tests/settings"
+	"github.com/deis/workflow-e2e/tests/util"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -43,7 +44,9 @@ var _ = Describe("git push deis master", func() {
 			Context("and who has a local git repo containing buildpack source code", func() {
 
 				BeforeEach(func() {
-					output, err := cmd.Execute(`git clone https://github.com/deis/example-go.git`)
+					_, bprepo := util.Getbuildpack()
+					command := "git clone " + bprepo
+					output, err := cmd.Execute(command)
 					Expect(err).NotTo(HaveOccurred(), output)
 				})
 
@@ -52,7 +55,8 @@ var _ = Describe("git push deis master", func() {
 					var app model.App
 
 					BeforeEach(func() {
-						os.Chdir("example-go")
+						buildpack, _ := util.Getbuildpack()
+						os.Chdir(buildpack)
 						app = apps.Create(user)
 					})
 
@@ -122,7 +126,9 @@ var _ = Describe("git push deis master", func() {
 
 						BeforeEach(func() {
 							os.Chdir("..")
-							output, err := cmd.Execute(`git clone https://github.com/deis/example-nodejs-express.git`)
+							_, nextrepo := util.GetNextBp()
+							repocommand := "git clone " + nextrepo
+							output, err := cmd.Execute(repocommand)
 							Expect(err).NotTo(HaveOccurred(), output)
 						})
 
@@ -131,7 +137,8 @@ var _ = Describe("git push deis master", func() {
 							var app2 model.App
 
 							BeforeEach(func() {
-								os.Chdir("example-nodejs-express")
+								nextbp := util.GetBpName(util.GetBp()[util.GetBpNum()+1])
+								os.Chdir(nextbp)
 								app2 = apps.Create(user)
 							})
 
@@ -140,9 +147,11 @@ var _ = Describe("git push deis master", func() {
 							})
 
 							Specify("that user can deploy both apps concurrently", func() {
-								os.Chdir(filepath.Join("..", "example-go"))
+								nextbp, _ := util.GetNextBp()
+								existingbp, _ := util.Getbuildpack()
+								os.Chdir(filepath.Join("..", existingbp))
 								sess := git.StartPush(user, keyPath)
-								os.Chdir(filepath.Join("..", "example-nodejs-express"))
+								os.Chdir(filepath.Join("..", nextbp))
 								sess2 := git.StartPush(user, keyPath)
 								Eventually(sess, settings.MaxEventuallyTimeout).Should(Exit(0))
 								Eventually(sess2, settings.MaxEventuallyTimeout).Should(Exit(0))
